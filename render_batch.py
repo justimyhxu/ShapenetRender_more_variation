@@ -61,31 +61,33 @@ def gen_obj(model_root_dir, cat_id, obj_id):
 	else:
 		print("Start %s %s" % (cat_id, obj_id))
 		if FLAGS.debug:
-			os.system(FLAGS.blender_location + ' --background --python render_blender.py -- --views %d --obj_image_easy_dir %s --obj_albedo_easy_dir %s --obj_depth_easy_dir %s --obj_normal_easy_dir %s --obj_image_hard_dir %s --obj_albedo_hard_dir %s --obj_depth_hard_dir %s --obj_normal_hard_dir %s %s ' % (36, obj_image_easy_dir, obj_albedo_easy_dir, obj_depth_easy_dir, obj_normal_easy_dir, obj_image_hard_dir, obj_albedo_hard_dir, obj_depth_hard_dir, obj_normal_hard_dir, objpath))
+			os.system(FLAGS.blender_location + ' --background --/opt/conda/bin/python render_blender.py -- --views %d --obj_image_easy_dir %s --obj_albedo_easy_dir %s --obj_depth_easy_dir %s --obj_normal_easy_dir %s --obj_image_hard_dir %s --obj_albedo_hard_dir %s --obj_depth_hard_dir %s --obj_normal_hard_dir %s %s ' % (36, obj_image_easy_dir, obj_albedo_easy_dir, obj_depth_easy_dir, obj_normal_easy_dir, obj_image_hard_dir, obj_albedo_hard_dir, obj_depth_hard_dir, obj_normal_hard_dir, objpath))
 
 		else:
-			os.system(FLAGS.blender_location + ' --background --python render_blender.py -- --views %d --obj_image_easy_dir %s --obj_albedo_easy_dir %s --obj_depth_easy_dir %s --obj_normal_easy_dir %s --obj_image_hard_dir %s --obj_albedo_hard_dir %s --obj_depth_hard_dir %s --obj_normal_hard_dir %s %s > /dev/null 2>&1' % (36, obj_image_easy_dir, obj_albedo_easy_dir, obj_depth_easy_dir, obj_normal_easy_dir, obj_image_hard_dir, obj_albedo_hard_dir, obj_depth_hard_dir, obj_normal_hard_dir, objpath))
-
+                    cmd = FLAGS.blender_location + ' --background --python render_blender.py -- --views %d --obj_image_easy_dir %s --obj_albedo_easy_dir %s --obj_depth_easy_dir %s --obj_normal_easy_dir %s --obj_image_hard_dir %s --obj_albedo_hard_dir %s --obj_depth_hard_dir %s --obj_normal_hard_dir %s %s  > /dev/null 2>&1 ' % (36, obj_image_easy_dir, obj_albedo_easy_dir, obj_depth_easy_dir, obj_normal_easy_dir, obj_image_hard_dir, obj_albedo_hard_dir, obj_depth_hard_dir, obj_normal_hard_dir, objpath)
+                    print(cmd)
+                    os.system(cmd)
 		print("Finished %s %s"%(cat_id, obj_id))
 #
 
 for filename in os.listdir(filelist_dir):
-	if filename.endswith(".lst"):
-		cat_id = filename.split(".")[0]
-		file = os.path.join(filelist_dir, filename)
-		lst = []
-		with open(file) as f:
-			content = f.read().splitlines()
-			for line in content:
-				lst.append(line)
+# if filename.endswith(".lst"):
+# for filename in open(filelist_dir):
+#         filename = filename.strip()
+        cat_id = filename.split(".")[0]
+        file = os.path.join(filelist_dir, filename+'.list')
+        if os.path.exists(file):
+            lst = []
+            with open(file) as f:
+                content = f.read().splitlines()
+                for line in content:
+                    lst.append(line)
 
-		model_root_dir_lst = [model_root_dir for i in range(len(lst))]
-		cat_id_lst = [cat_id for i in range(len(lst))]
-		with Parallel(n_jobs=5) as parallel:
-			parallel(delayed(gen_obj)(model_root_dir, cat_id, obj_id) for
-					 model_root_dir, cat_id, obj_id in
-					 zip(model_root_dir_lst, cat_id_lst, lst))
-	print("Finished %s"%cat_id)
+            model_root_dir_lst = [model_root_dir for i in range(len(lst))]
+            cat_id_lst = [cat_id for i in range(len(lst))]
+            with Parallel(n_jobs=5) as parallel:
+                parallel(delayed(gen_obj)(model_root_dir, cat_id, obj_id) for model_root_dir, cat_id, obj_id in zip(model_root_dir_lst, cat_id_lst, lst))
+print("Finished %s"%cat_id)
 
 
 # if not os.path.exists(output_path):

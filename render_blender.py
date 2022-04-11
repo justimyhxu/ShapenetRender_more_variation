@@ -4,7 +4,9 @@
 # Example:
 # blender --background --python mytest.py -- --views 10 /path/to/my.obj
 #
-
+import sys
+print(sys.path)
+# sys.path.insert(0, '/opt/conda/lib/python3.6/site-packages')
 import argparse, sys, os
 parser = argparse.ArgumentParser(description='Renders given obj file by rotation a camera around it.')
 parser.add_argument('--views', type=int, default=1,
@@ -67,7 +69,9 @@ else:
   map.size = [args.depth_scale]
   map.use_min = True
   map.min = [0]
-  links.new(render_layers.outputs['Depth'], map.inputs[0])
+  print(render_layers.outputs.keys())
+  # links.new(render_layers.outputs['Depth'], map.inputs[0])
+  links.new(render_layers.outputs['Alpha'], map.inputs[0])
 
   links.new(map.outputs[0], depth_file_output.inputs[0])
 
@@ -246,7 +250,8 @@ for j in range(2):
             else:
                 x_rot = angle_rand[1] * 45
             if j== 0:
-                dist = 0.65 + angle_rand[2] * 0.35
+                # dist = 0.65 + angle_rand[2] * 0.35
+                dist = 1
             elif counter >= 5:
                 dist = 0.75 + angle_rand[2] * 0.35
             else:
@@ -272,6 +277,7 @@ for j in range(2):
         metastring = metastring + "[{},{},{},{},{},{},{},{},{},{}], \n" \
                      .format(y_rot, x_rot, 0, dist, 35, 32, 1.75,
                         target_obj.location[0], target_obj.location[1], target_obj.location[2])
+    print('xxx')
     with open(obj_image_dir[j]+"/rendering_metadata.txt", "w") as f:
         f.write(metastring)
     with open(obj_albedo_dir[j]+"/rendering_metadata.txt", "w") as f:
