@@ -65,7 +65,7 @@ def gen_obj(model_root_dir, cat_id, obj_id):
 
 		else:
                     cmd = FLAGS.blender_location + ' --background --python render_blender.py -- --views %d --obj_image_easy_dir %s --obj_albedo_easy_dir %s --obj_depth_easy_dir %s --obj_normal_easy_dir %s --obj_image_hard_dir %s --obj_albedo_hard_dir %s --obj_depth_hard_dir %s --obj_normal_hard_dir %s %s  > /dev/null 2>&1 ' % (36, obj_image_easy_dir, obj_albedo_easy_dir, obj_depth_easy_dir, obj_normal_easy_dir, obj_image_hard_dir, obj_albedo_hard_dir, obj_depth_hard_dir, obj_normal_hard_dir, objpath)
-                    print(cmd)
+                    # print(cmd)
                     os.system(cmd)
 		print("Finished %s %s"%(cat_id, obj_id))
 #
